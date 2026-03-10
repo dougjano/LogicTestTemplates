@@ -1,5 +1,9 @@
 package main
 
+import (
+	"fmt"
+)
+
 func UpsertMapCounter(values []int, ratio int) (map[int]int, int) {
 	result := map[int]int{}
 	maxExpoent := 0
@@ -55,6 +59,31 @@ func CheckTripletsCount(values []int, ratio int) int {
 		}
 
 		result += tripletCounter
+	}
+
+	return result
+}
+
+func OptimizedTripletsCount(values []int, ratio int) int {
+	result := 0
+	mapCounter := map[int]int{}
+	mapPairCounter := map[string]int{}
+
+	for _, val := range values {
+		prev := val / ratio
+		prevPrev := prev / ratio
+
+		if val%ratio == 0 && prev%ratio == 0 {
+			pairKey := fmt.Sprintf("%d,%d", prevPrev, prev)
+			result += mapPairCounter[pairKey]
+		}
+
+		if val%ratio == 0 {
+			pairKey := fmt.Sprintf("%d,%d", prev, val)
+			mapPairCounter[pairKey] += mapCounter[prev]
+		}
+
+		mapCounter[val]++
 	}
 
 	return result
